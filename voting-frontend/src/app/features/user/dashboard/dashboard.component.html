@@ -1,0 +1,68 @@
+<div class="container py-4">
+  <div class="mb-4">
+    <h3 class="mb-1">Welcome, {{ auth.currentUser()?.fullName }} 👋</h3>
+    <p class="text-muted mb-0">{{ auth.currentUser()?.email }} &middot; {{ auth.currentUser()?.mobile }}</p>
+    <div class="mt-2">
+      <span class="badge me-2" [class.text-bg-success]="auth.currentUser()?.emailVerified" [class.text-bg-secondary]="!auth.currentUser()?.emailVerified">
+        <i class="bi bi-envelope-check"></i> Email {{ auth.currentUser()?.emailVerified ? 'Verified' : 'Unverified' }}
+      </span>
+      <span class="badge" [class.text-bg-success]="auth.currentUser()?.mobileVerified" [class.text-bg-secondary]="!auth.currentUser()?.mobileVerified">
+        <i class="bi bi-phone"></i> Mobile {{ auth.currentUser()?.mobileVerified ? 'Verified' : 'Unverified' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card p-3 text-center stat-card">
+        <div class="text-muted small">Active</div>
+        <h2 class="text-success">{{ activeElections().length }}</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-3 text-center stat-card">
+        <div class="text-muted small">Upcoming</div>
+        <h2 class="text-primary">{{ upcomingElections().length }}</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-3 text-center stat-card">
+        <div class="text-muted small">Completed</div>
+        <h2 class="text-secondary">{{ completedElections().length }}</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-3 text-center stat-card">
+        <div class="text-muted small">Total Elections</div>
+        <h2>{{ elections().length }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Active Elections - Cast Your Vote</h5>
+    <a routerLink="/user/elections" class="small">View all &rarr;</a>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (activeElections().length === 0) {
+    <div class="card p-4 text-center text-muted">No elections are open for voting right now.</div>
+  } @else {
+    <div class="row g-3">
+      @for (e of activeElections(); track e.id) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card p-3 h-100">
+            <div class="d-flex justify-content-between align-items-start">
+              <h6 class="mb-2">{{ e.title }}</h6>
+              <app-status-badge [status]="e.status"></app-status-badge>
+            </div>
+            <p class="text-muted small flex-grow-1">{{ e.description || 'No description provided.' }}</p>
+            <div class="text-muted small mb-2"><i class="bi bi-people"></i> {{ e.candidateCount }} candidates</div>
+            <a [routerLink]="['/user/elections', e.id]" class="btn btn-brand btn-sm w-100">Vote Now</a>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

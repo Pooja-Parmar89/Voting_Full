@@ -1,0 +1,111 @@
+<div class="container py-4" style="max-width: 800px;">
+  <a routerLink="/user/elections" class="small"><i class="bi bi-arrow-left"></i> Back to elections</a>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (!election()) {
+    <div class="card p-4 text-center text-muted mt-3">Election not found.</div>
+  } @else {
+    <div class="card p-4 mt-3">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <h4 class="mb-0">{{ election()!.title }}</h4>
+        <app-status-badge [status]="election()!.status"></app-status-badge>
+      </div>
+      <p class="text-muted">{{ election()!.description }}</p>
+      <div class="text-muted small">
+        <i class="bi bi-calendar-event"></i> {{ election()!.startDateTime | date:'medium' }} &rarr; {{ election()!.endDateTime | date:'medium' }}
+      </div>
+    </div>
+
+    @if (voteResult()) {
+      <div class="card p-4 mt-3 text-center border-success">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 2.5rem;"></i>
+        <h5 class="mt-2">Vote Submitted Successfully</h5>
+        <p class="text-muted mb-1">Election: {{ voteResult()!.electionTitle }}</p>
+        <p class="text-muted mb-1">Submitted at: {{ voteResult()!.votedAt | date:'medium' }}</p>
+        <p class="mb-0">Reference ID: <strong>{{ voteResult()!.voteReference }}</strong></p>
+      </div>
+    } @else if (hasVoted()) {
+      <div class="card p-4 mt-3 text-center text-success">
+        <i class="bi bi-check-circle-fill" style="font-size: 2rem;"></i>
+        <p class="mb-0 mt-2">You have already voted in this election.</p>
+      </div>
+    }
+
+    @if (!electionOpen() && !hasVoted()) {
+      <div class="alert alert-secondary mt-3">
+        Voting is not currently open for this election (status: {{ election()!.status }}).
+      </div>
+    }
+
+    @if (!hasVoted() && electionOpen()) {
+      <h6 class="mt-4 mb-3">Select a candidate</h6>
+      <div class="row g-3">
+        @for (c of candidates(); track c.id) {
+          <div class="col-md-6">
+            <div class="card p-3 h-100" role="button" (click)="select(c.id)">
+              <div class="d-flex align-items-center gap-3">
+                @if (c.imageUrl) {
+                  <img [src]="c.imageUrl" class="rounded-circle" width="48" height="48" style="object-fit:cover;">
+                } @else {
+                  <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:48px;height:48px;">
+                    <i class="bi bi-person-fill text-muted"></i>
+                  </div>
+                }
+                <div>
+                  <div class="fw-semibold">{{ c.name }}</div>
+                  @if (c.party) { <div class="text-muted small">{{ c.party }}</div> }
+                </div>
+              </div>
+              @if (c.description) { <p class="text-muted small mt-2 mb-0">{{ c.description }}</p> }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (results()) {
+      <h6 class="mt-4 mb-3">Results</h6>
+      <div class="card p-3">
+        <p class="small text-muted mb-3">
+          {{ results()!.totalVotesCast }} total votes cast &middot; {{ results()!.participationPercentage }}% participation
+        </p>
+        @for (c of results()!.candidates; track c.candidateId) {
+          <div class="mb-2">
+            <div class="d-flex justify-content-between small mb-1">
+              <span>{{ c.candidateName }} @if (c.party) { <span class="text-muted">({{ c.party }})</span> }</span>
+              <span>{{ c.totalVotes }} votes &middot; {{ c.percentage }}%</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar bg-brand" [style.width.%]="c.percentage" style="background-color: var(--brand);"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (confirming()) {
+  <div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-3">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Confirm your vote</h5>
+        </div>
+        <div class="modal-body">
+          <p>You are about to vote for:</p>
+          <h5 class="text-center">{{ candidateName(selectedCandidate()!) }}</h5>
+          <p class="text-muted small text-center mb-0">This action cannot be undone. Each voter can only vote once per election.</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-secondary" (click)="cancelConfirm()" [disabled]="submitting()">Cancel</button>
+          <button class="btn btn-brand" (click)="confirmVote()" [disabled]="submitting()">
+            @if (submitting()) { <span class="spinner-border spinner-inline me-2"></span> }
+            Confirm Vote
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,35 @@
+<div class="container py-4">
+  <h4 class="mb-4">Audit Logs</h4>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (logs().length === 0) {
+    <div class="card p-4 text-center text-muted">No audit records yet.</div>
+  } @else {
+    <div class="card p-0">
+      <table class="table mb-0 align-middle">
+        <thead>
+          <tr><th>Time</th><th>Action</th><th>Module</th><th>Description</th><th>By</th><th>IP</th></tr>
+        </thead>
+        <tbody>
+          @for (log of logs(); track log.id) {
+            <tr>
+              <td class="small">{{ log.createdDate | date:'medium' }}</td>
+              <td><span class="badge text-bg-light border">{{ log.action }}</span></td>
+              <td class="small">{{ log.module }}</td>
+              <td class="small">{{ log.description }}</td>
+              <td class="small">{{ log.createdBy }}</td>
+              <td class="small">{{ log.ipAddress }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button class="btn btn-sm btn-outline-secondary" (click)="prevPage()" [disabled]="page() === 0">Previous</button>
+      <span class="small text-muted">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+      <button class="btn btn-sm btn-outline-secondary" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">Next</button>
+    </div>
+  }
+</div>

@@ -1,0 +1,40 @@
+<div class="container py-4">
+  <h4 class="mb-4">Login Logs</h4>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (logs().length === 0) {
+    <div class="card p-4 text-center text-muted">No login records yet.</div>
+  } @else {
+    <div class="card p-0">
+      <table class="table mb-0 align-middle">
+        <thead>
+          <tr><th>User</th><th>Time</th><th>Status</th><th>IP</th><th>Browser / OS</th><th>Logout</th><th>Failure Reason</th></tr>
+        </thead>
+        <tbody>
+          @for (log of logs(); track log.id) {
+            <tr>
+              <td>{{ log.userFullName || log.attemptedIdentifier || '-' }}</td>
+              <td class="small">{{ log.loginTime | date:'medium' }}</td>
+              <td>
+                <span class="badge" [class.text-bg-success]="log.status === 'SUCCESS'" [class.text-bg-danger]="log.status === 'FAILED'">
+                  {{ log.status }}
+                </span>
+              </td>
+              <td class="small">{{ log.ipAddress }}</td>
+              <td class="small">{{ log.browser }} / {{ log.operatingSystem }}</td>
+              <td class="small">{{ log.logoutTime ? (log.logoutTime | date:'short') : '-' }}</td>
+              <td class="small text-danger">{{ log.failureReason }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button class="btn btn-sm btn-outline-secondary" (click)="prevPage()" [disabled]="page() === 0">Previous</button>
+      <span class="small text-muted">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+      <button class="btn btn-sm btn-outline-secondary" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">Next</button>
+    </div>
+  }
+</div>

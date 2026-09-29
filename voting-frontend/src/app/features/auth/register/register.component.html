@@ -1,0 +1,67 @@
+<div class="auth-shell">
+  <div class="card p-4 p-md-5" style="max-width: 480px; width: 100%;">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-plus" style="font-size: 2.2rem; color: var(--brand);"></i>
+      <h3 class="mt-2 mb-0">Create your account</h3>
+      <p class="text-muted small">Register to vote in upcoming elections</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" formControlName="fullName">
+        @if (form.get('fullName')?.touched && form.get('fullName')?.invalid) {
+          <div class="text-danger small">Full name is required (min 2 characters)</div>
+        }
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="email">
+          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <div class="text-danger small">Valid email required</div>
+          }
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Mobile Number</label>
+          <input class="form-control" formControlName="mobile" placeholder="10-digit number">
+          @if (form.get('mobile')?.touched && form.get('mobile')?.invalid) {
+            <div class="text-danger small">Valid 10-digit mobile number required</div>
+          }
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Voter Reference ID <span class="text-muted">(optional)</span></label>
+        <input class="form-control" formControlName="voterRefId">
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" formControlName="password">
+          @if (form.get('password')?.touched && form.get('password')?.invalid) {
+            <div class="text-danger small">Minimum 6 characters</div>
+          }
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" formControlName="confirmPassword">
+        </div>
+      </div>
+      @if (form.errors?.['mismatch']) {
+        <div class="text-danger small mb-3">Passwords do not match</div>
+      }
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" formControlName="acceptTerms" id="terms">
+        <label class="form-check-label small" for="terms">I accept the Terms & Conditions</label>
+      </div>
+      <button class="btn btn-brand w-100" [disabled]="loading()">
+        @if (loading()) { <span class="spinner-border spinner-inline me-2"></span> }
+        Create Account
+      </button>
+    </form>
+
+    <p class="text-center small text-muted mt-4 mb-0">
+      Already have an account? <a routerLink="/auth/login">Sign in</a>
+    </p>
+  </div>
+</div>

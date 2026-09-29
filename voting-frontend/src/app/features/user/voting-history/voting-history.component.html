@@ -1,0 +1,42 @@
+<div class="container py-4">
+  <h4 class="mb-3">Account & Security Activity</h4>
+  <p class="text-muted small">
+    Vote choices are kept private and are never linked back to your account - even here.
+    Below is your login/security history instead.
+  </p>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (logs().length === 0) {
+    <div class="card p-4 text-center text-muted">No login history yet.</div>
+  } @else {
+    <div class="card p-0">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Date/Time</th>
+            <th>Status</th>
+            <th>IP Address</th>
+            <th>Browser</th>
+            <th>OS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of logs(); track log.id) {
+            <tr>
+              <td>{{ log.loginTime | date:'medium' }}</td>
+              <td>
+                <span class="badge" [class.text-bg-success]="log.status === 'SUCCESS'" [class.text-bg-danger]="log.status === 'FAILED'">
+                  {{ log.status }}
+                </span>
+              </td>
+              <td>{{ log.ipAddress }}</td>
+              <td>{{ log.browser }}</td>
+              <td>{{ log.operatingSystem }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

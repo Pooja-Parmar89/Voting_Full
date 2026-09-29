@@ -1,0 +1,33 @@
+<div class="container py-4">
+  <h4 class="mb-3">Elections</h4>
+
+  <div class="btn-group mb-4">
+    <button class="btn btn-sm" [class.btn-brand]="filter()==='ALL'" [class.btn-outline-secondary]="filter()!=='ALL'" (click)="filter.set('ALL')">All</button>
+    <button class="btn btn-sm" [class.btn-brand]="filter()==='ACTIVE'" [class.btn-outline-secondary]="filter()!=='ACTIVE'" (click)="filter.set('ACTIVE')">Active</button>
+    <button class="btn btn-sm" [class.btn-brand]="filter()==='UPCOMING'" [class.btn-outline-secondary]="filter()!=='UPCOMING'" (click)="filter.set('UPCOMING')">Upcoming</button>
+    <button class="btn btn-sm" [class.btn-brand]="filter()==='CLOSED'" [class.btn-outline-secondary]="filter()!=='CLOSED'" (click)="filter.set('CLOSED')">Completed</button>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (filtered().length === 0) {
+    <div class="card p-4 text-center text-muted">No elections found for this filter.</div>
+  } @else {
+    <div class="row g-3">
+      @for (e of filtered(); track e.id) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card p-3 h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start">
+              <h6 class="mb-2">{{ e.title }}</h6>
+              <app-status-badge [status]="e.status"></app-status-badge>
+            </div>
+            <p class="text-muted small flex-grow-1">{{ e.description || 'No description provided.' }}</p>
+            <div class="text-muted small mb-1"><i class="bi bi-calendar-event"></i> {{ e.startDateTime | date:'medium' }} &rarr; {{ e.endDateTime | date:'medium' }}</div>
+            <div class="text-muted small mb-3"><i class="bi bi-people"></i> {{ e.candidateCount }} candidates</div>
+            <a [routerLink]="['/user/elections', e.id]" class="btn btn-outline-brand btn-sm w-100">View Details</a>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

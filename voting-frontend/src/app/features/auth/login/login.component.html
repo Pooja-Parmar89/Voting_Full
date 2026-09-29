@@ -1,0 +1,42 @@
+<div class="auth-shell">
+  <div class="card p-4 p-md-5" style="max-width: 420px; width: 100%;">
+    <div class="text-center mb-4">
+      <i class="bi bi-check2-square" style="font-size: 2.5rem; color: var(--brand);"></i>
+      <h3 class="mt-2 mb-0">Welcome back</h3>
+      <p class="text-muted small">Sign in to VoteSecure</p>
+    </div>
+
+    @if (!otpStage()) {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label">Email or Mobile Number</label>
+          <input class="form-control" formControlName="identifier" placeholder="you@example.com">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" formControlName="password" placeholder="••••••••">
+        </div>
+        <div class="d-flex justify-content-end mb-3">
+          <a routerLink="/auth/forgot-password" class="small">Forgot password?</a>
+        </div>
+        <button class="btn btn-brand w-100" [disabled]="loading()">
+          @if (loading()) { <span class="spinner-border spinner-inline me-2"></span> }
+          Sign In
+        </button>
+      </form>
+    } @else {
+      <div>
+        <p class="text-muted small">Enter the OTP sent to your registered email.</p>
+        <input class="form-control mb-3" [(ngModel)]="otpCode" placeholder="6-digit code">
+        <button class="btn btn-brand w-100" (click)="submitOtp()" [disabled]="loading()">
+          @if (loading()) { <span class="spinner-border spinner-inline me-2"></span> }
+          Verify & Sign In
+        </button>
+      </div>
+    }
+
+    <p class="text-center small text-muted mt-4 mb-0">
+      Don't have an account? <a routerLink="/auth/register">Register here</a>
+    </p>
+  </div>
+</div>

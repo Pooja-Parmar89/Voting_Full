@@ -1,0 +1,72 @@
+<div class="container py-4">
+  <h4 class="mb-4">Manage Users</h4>
+
+  <div class="row g-2 mb-3">
+    <div class="col-md-5">
+      <input class="form-control" placeholder="Search by name, email or mobile" [(ngModel)]="search" (keyup.enter)="applyFilters()">
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="status" (change)="applyFilters()">
+        <option value="">All statuses</option>
+        <option value="PENDING_VERIFICATION">Pending Verification</option>
+        <option value="ACTIVE">Active</option>
+        <option value="BLOCKED">Blocked</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-brand w-100" (click)="applyFilters()">Search</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (users().length === 0) {
+    <div class="card p-4 text-center text-muted">No users found.</div>
+  } @else {
+    <div class="card p-0">
+      <table class="table mb-0 align-middle">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Mobile</th><th>Verified</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          @for (u of users(); track u.id) {
+            <tr>
+              <td>{{ u.fullName }}</td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.mobile }}</td>
+              <td>
+                <i class="bi" [class.bi-check-circle-fill]="u.emailVerified && u.mobileVerified"
+                   [class.text-success]="u.emailVerified && u.mobileVerified"
+                   [class.bi-dash-circle]="!(u.emailVerified && u.mobileVerified)"
+                   [class.text-muted]="!(u.emailVerified && u.mobileVerified)"></i>
+              </td>
+              <td>
+                <span class="badge"
+                  [class.text-bg-warning]="u.status === 'PENDING_VERIFICATION'"
+                  [class.text-bg-success]="u.status === 'ACTIVE'"
+                  [class.text-bg-danger]="u.status === 'BLOCKED'">
+                  {{ u.status.replace('_',' ') }}
+                </span>
+              </td>
+              <td>
+                @if (u.role !== 'ADMIN') {
+                  @if (u.status === 'BLOCKED') {
+                    <button class="btn btn-sm btn-outline-success" (click)="unblock(u)">Unblock</button>
+                  } @else {
+                    <button class="btn btn-sm btn-outline-danger" (click)="block(u)">Block</button>
+                  }
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button class="btn btn-sm btn-outline-secondary" (click)="prevPage()" [disabled]="page() === 0">Previous</button>
+      <span class="small text-muted">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+      <button class="btn btn-sm btn-outline-secondary" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">Next</button>
+    </div>
+  }
+</div>

@@ -1,0 +1,43 @@
+<div class="container py-4" style="max-width: 640px;">
+  <h4 class="mb-4">My Profile</h4>
+
+  <div class="card p-4 mb-4">
+    <h6 class="mb-3">Account Details</h6>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Email</label>
+      <input class="form-control" [value]="auth.currentUser()?.email" disabled>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">Mobile</label>
+      <input class="form-control" [value]="auth.currentUser()?.mobile" disabled>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input class="form-control" [(ngModel)]="fullName">
+    </div>
+    <button class="btn btn-brand" (click)="saveProfile()" [disabled]="savingProfile()">
+      @if (savingProfile()) { <span class="spinner-border spinner-inline me-2"></span> }
+      Save Changes
+    </button>
+  </div>
+
+  <div class="card p-4">
+    <h6 class="mb-3">Change Password</h6>
+    <div class="mb-3">
+      <label class="form-label">Current Password</label>
+      <input type="password" class="form-control" [(ngModel)]="oldPassword">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">New Password</label>
+      <input type="password" class="form-control" [(ngModel)]="newPassword">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Confirm New Password</label>
+      <input type="password" class="form-control" [(ngModel)]="confirmPassword">
+    </div>
+    <button class="btn btn-outline-brand" (click)="changePassword()" [disabled]="savingPassword()">
+      @if (savingPassword()) { <span class="spinner-border spinner-inline me-2"></span> }
+      Change Password
+    </button>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<div class="container py-4" style="max-width: 900px;">
+  <a routerLink="/admin/elections" class="small"><i class="bi bi-arrow-left"></i> Back to elections</a>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (election()) {
+    <div class="card p-4 mt-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <h4 class="mb-0">{{ election()!.title }}</h4>
+        <app-status-badge [status]="election()!.status"></app-status-badge>
+      </div>
+      <p class="text-muted mt-2">{{ election()!.description }}</p>
+      <div class="text-muted small">
+        {{ election()!.startDateTime | date:'medium' }} &rarr; {{ election()!.endDateTime | date:'medium' }}
+      </div>
+      @if (election()!.status === 'DRAFT') {
+        <button class="btn btn-success mt-3" style="width:fit-content;" (click)="publish()">
+          <i class="bi bi-broadcast"></i> Publish Election (requires 2+ candidates)
+        </button>
+      }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+      <h6 class="mb-0">Candidates ({{ candidates().length }})</h6>
+      @if (editableStatus()) {
+        <button class="btn btn-sm btn-brand" (click)="openAddCandidate()"><i class="bi bi-plus-lg"></i> Add Candidate</button>
+      }
+    </div>
+
+    @if (candidates().length === 0) {
+      <div class="card p-4 text-center text-muted">No candidates added yet.</div>
+    } @else {
+      <div class="row g-3">
+        @for (c of candidates(); track c.id) {
+          <div class="col-md-6">
+            <div class="card p-3">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <div class="fw-semibold">{{ c.name }} @if (c.status === 'REMOVED') { <span class="badge text-bg-secondary ms-1">Removed</span> }</div>
+                  @if (c.party) { <div class="text-muted small">{{ c.party }}</div> }
+                </div>
+                @if (editableStatus() && c.status === 'ACTIVE') {
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="openEditCandidate(c)"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="removeCandidate(c)"><i class="bi bi-trash"></i></button>
+                  </div>
+                }
+              </div>
+              @if (c.description) { <p class="text-muted small mt-2 mb-0">{{ c.description }}</p> }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (results()) {
+      <h6 class="mt-4 mb-3">Live Results (admin view)</h6>
+      <div class="card p-3">
+        <p class="small text-muted mb-3">
+          {{ results()!.totalVotesCast }} total votes cast &middot; {{ results()!.participationPercentage }}% participation
+          ({{ results()!.totalEligibleParticipants }} eligible voters)
+        </p>
+        @for (c of results()!.candidates; track c.candidateId) {
+          <div class="mb-2">
+            <div class="d-flex justify-content-between small mb-1">
+              <span>{{ c.candidateName }} @if (c.party) { <span class="text-muted">({{ c.party }})</span> }</span>
+              <span>{{ c.totalVotes }} votes &middot; {{ c.percentage }}%</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar" style="background-color: var(--brand);" [style.width.%]="c.percentage"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (showCandidateForm()) {
+  <div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-3">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">{{ editingCandidateId() ? 'Edit' : 'Add' }} Candidate</h5>
+          <button class="btn-close" (click)="showCandidateForm.set(false)"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control" [(ngModel)]="candidateForm.name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Party / Organization</label>
+            <input class="form-control" [(ngModel)]="candidateForm.party">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="candidateForm.description"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Image URL <span class="text-muted">(optional)</span></label>
+            <input class="form-control" [(ngModel)]="candidateForm.imageUrl">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Symbol URL <span class="text-muted">(optional)</span></label>
+            <input class="form-control" [(ngModel)]="candidateForm.symbolUrl">
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-secondary" (click)="showCandidateForm.set(false)">Cancel</button>
+          <button class="btn btn-brand" (click)="saveCandidate()" [disabled]="savingCandidate()">
+            @if (savingCandidate()) { <span class="spinner-border spinner-inline me-2"></span> }
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

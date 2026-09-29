@@ -1,0 +1,100 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Manage Elections</h4>
+    <button class="btn btn-brand" (click)="openCreate()"><i class="bi bi-plus-lg"></i> New Election</button>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (elections().length === 0) {
+    <div class="card p-4 text-center text-muted">No elections yet. Create one to get started.</div>
+  } @else {
+    <div class="card p-0">
+      <table class="table mb-0 align-middle">
+        <thead>
+          <tr><th>Title</th><th>Status</th><th>Start</th><th>End</th><th>Candidates</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          @for (e of elections(); track e.id) {
+            <tr>
+              <td>{{ e.title }}</td>
+              <td><app-status-badge [status]="e.status"></app-status-badge></td>
+              <td class="small">{{ e.startDateTime | date:'short' }}</td>
+              <td class="small">{{ e.endDateTime | date:'short' }}</td>
+              <td>{{ e.candidateCount }}</td>
+              <td>
+                <div class="d-flex gap-1 flex-wrap">
+                  <a [routerLink]="['/admin/elections', e.id]" class="btn btn-sm btn-outline-brand">Manage</a>
+                  @if (e.status === 'DRAFT') {
+                    <button class="btn btn-sm btn-success" (click)="publish(e)">Publish</button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="remove(e)">Delete</button>
+                  }
+                  @if (e.status === 'UPCOMING' || e.status === 'ACTIVE') {
+                    <button class="btn btn-sm btn-outline-danger" (click)="cancel(e)">Cancel</button>
+                  }
+                  @if (e.status === 'CLOSED') {
+                    <button class="btn btn-sm btn-outline-secondary" (click)="declareResults(e)">Declare Results</button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (showCreate()) {
+  <div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content p-3">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Create Election</h5>
+          <button class="btn-close" (click)="showCreate.set(false)"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input class="form-control" [(ngModel)]="form.title">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="form.description"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Election Type <span class="text-muted">(optional)</span></label>
+            <input class="form-control" [(ngModel)]="form.electionType" placeholder="e.g. Student Council">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Start Date/Time</label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="form.startDateTime">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">End Date/Time</label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="form.endDateTime">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Result Visibility</label>
+            <select class="form-select" [(ngModel)]="form.resultVisibility">
+              <option value="AFTER_CLOSE">Show results only after election closes</option>
+              <option value="ALWAYS">Show live results while active</option>
+            </select>
+          </div>
+          <p class="text-muted small mb-0">
+            The election is created as <strong>DRAFT</strong>. Add at least 2 candidates, then Publish it.
+          </p>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-secondary" (click)="showCreate.set(false)">Cancel</button>
+          <button class="btn btn-brand" (click)="create()" [disabled]="saving()">
+            @if (saving()) { <span class="spinner-border spinner-inline me-2"></span> }
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,73 @@
+:root {
+  --brand: #4f46e5;
+  --brand-dark: #3730a3;
+  --bg-soft: #f5f6fb;
+}
+
+body {
+  background-color: var(--bg-soft);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.btn-brand {
+  background-color: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.btn-brand:hover {
+  background-color: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+}
+
+.btn-outline-brand {
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  background: transparent;
+}
+.btn-outline-brand:hover {
+  background-color: var(--brand);
+  color: #fff;
+}
+
+.navbar-brand-icon {
+  color: var(--brand);
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  border-radius: 12px;
+}
+
+.status-badge {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: .3rem .6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.status-DRAFT { background:#e5e7eb; color:#374151; }
+.status-UPCOMING { background:#dbeafe; color:#1e40af; }
+.status-ACTIVE { background:#dcfce7; color:#166534; }
+.status-CLOSED { background:#fef3c7; color:#92400e; }
+.status-RESULT_DECLARED { background:#ede9fe; color:#5b21b6; }
+.status-CANCELLED { background:#fee2e2; color:#991b1b; }
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.stat-card h2 {
+  font-weight: 700;
+}
+
+.spinner-inline {
+  width: 1rem;
+  height: 1rem;
+}

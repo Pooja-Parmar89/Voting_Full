@@ -1,0 +1,81 @@
+<div class="container py-4">
+  <h4 class="mb-4">Admin Dashboard</h4>
+
+  @if (loading()) {
+    <div class="text-center py-5"><span class="spinner-border"></span></div>
+  } @else if (stats()) {
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Total Users</div>
+          <h2>{{ stats()!.totalUsers }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Verified Users</div>
+          <h2 class="text-success">{{ stats()!.verifiedUsers }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Active Users</div>
+          <h2 class="text-primary">{{ stats()!.activeUsers }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Blocked Users</div>
+          <h2 class="text-danger">{{ stats()!.blockedUsers }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Total Elections</div>
+          <h2>{{ stats()!.totalElections }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Active Elections</div>
+          <h2 class="text-success">{{ stats()!.activeElections }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Completed Elections</div>
+          <h2 class="text-secondary">{{ stats()!.completedElections }}</h2>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card p-3 stat-card">
+          <div class="text-muted small">Total Votes Cast</div>
+          <h2>{{ stats()!.totalVotes }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <h6 class="mb-3">User Verification Progress</h6>
+      <div class="d-flex justify-content-between small mb-1">
+        <span>Verified</span>
+        <span>{{ pct(stats()!.verifiedUsers, stats()!.totalUsers) }}%</span>
+      </div>
+      <div class="progress mb-3" style="height: 10px;">
+        <div class="progress-bar" style="background-color: var(--brand);" [style.width.%]="pct(stats()!.verifiedUsers, stats()!.totalUsers)"></div>
+      </div>
+      <div class="d-flex justify-content-between small mb-1">
+        <span>Active (not blocked)</span>
+        <span>{{ pct(stats()!.activeUsers, stats()!.totalUsers) }}%</span>
+      </div>
+      <div class="progress" style="height: 10px;">
+        <div class="progress-bar bg-success" [style.width.%]="pct(stats()!.activeUsers, stats()!.totalUsers)"></div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a routerLink="/admin/elections" class="btn btn-brand"><i class="bi bi-calendar-plus"></i> Manage Elections</a>
+      <a routerLink="/admin/users" class="btn btn-outline-brand"><i class="bi bi-people"></i> Manage Users</a>
+    </div>
+  }
+</div>

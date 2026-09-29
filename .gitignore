@@ -1,0 +1,21 @@
+# Java / Maven
+**/target/
+**/.mvn/timing.properties
+
+# IntelliJ
+**/.idea/
+**/*.iml
+
+# Angular
+**/node_modules/
+**/.angular/
+
+# Environment / secrets
+**/.env
+
+# Local application configuration
+**/application-local.properties
+
+# OS
+Thumbs.db
+.DS_Store

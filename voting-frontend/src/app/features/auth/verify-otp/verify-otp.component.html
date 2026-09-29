@@ -1,0 +1,41 @@
+<div class="auth-shell">
+  <div class="card p-4 p-md-5" style="max-width: 460px; width: 100%;">
+    <div class="text-center mb-4">
+      <i class="bi bi-shield-check" style="font-size: 2.2rem; color: var(--brand);"></i>
+      <h3 class="mt-2 mb-0">Verify your account</h3>
+      <p class="text-muted small">
+        In dev mode both OTPs are printed to the <strong>backend console log</strong> instead of being emailed/texted.
+      </p>
+    </div>
+
+    <div class="mb-4 p-3 rounded" [class.bg-light]="!emailVerified()" [class.bg-success-subtle]="emailVerified()">
+      <label class="form-label fw-semibold">Email OTP <span class="text-muted fw-normal">({{ email }})</span></label>
+      @if (!emailVerified()) {
+        <div class="input-group">
+          <input class="form-control" [(ngModel)]="emailCode" placeholder="6-digit code">
+          <button class="btn btn-brand" (click)="verifyEmail()" [disabled]="loadingEmail()">Verify</button>
+        </div>
+        <button class="btn btn-link btn-sm px-0 mt-1" (click)="resend(email, 'EMAIL_VERIFICATION')">Resend OTP</button>
+      } @else {
+        <div class="text-success"><i class="bi bi-check-circle-fill"></i> Email verified</div>
+      }
+    </div>
+
+    <div class="mb-3 p-3 rounded" [class.bg-light]="!mobileVerified()" [class.bg-success-subtle]="mobileVerified()">
+      <label class="form-label fw-semibold">Mobile OTP <span class="text-muted fw-normal">({{ mobile }})</span></label>
+      @if (!mobileVerified()) {
+        <div class="input-group">
+          <input class="form-control" [(ngModel)]="mobileCode" placeholder="6-digit code">
+          <button class="btn btn-brand" (click)="verifyMobile()" [disabled]="loadingMobile()">Verify</button>
+        </div>
+        <button class="btn btn-link btn-sm px-0 mt-1" (click)="resend(mobile, 'MOBILE_VERIFICATION')">Resend OTP</button>
+      } @else {
+        <div class="text-success"><i class="bi bi-check-circle-fill"></i> Mobile verified</div>
+      }
+    </div>
+
+    <p class="text-center small text-muted mt-3 mb-0">
+      Already verified? <a routerLink="/auth/login">Sign in</a>
+    </p>
+  </div>
+</div>
