@@ -1,4 +1,4 @@
 package com.votingapp.voting.service;
 
-public class OtpService {
+public class EmailService {
 }
