@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OtpService {
+public class OtpService_b4OTPEmail {
 
     private final OtpVerificationRepository otpRepository;
     private final PasswordEncoder passwordEncoder;
